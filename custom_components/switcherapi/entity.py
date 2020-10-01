@@ -1,13 +1,14 @@
-"""BlueprintEntity class"""
+"""SwitcherApiEntity class"""
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from custom_components.blueprint.const import DOMAIN, NAME, VERSION
+from custom_components.switcherapi.const import DOMAIN, NAME, VERSION
 
 
-class BlueprintEntity(CoordinatorEntity):
+class SwitcherApiEntity(CoordinatorEntity):
     def __init__(self, coordinator, config_entry):
         super().__init__(coordinator)
         self.config_entry = config_entry
+        print(self.config_entry)
 
     @property
     def unique_id(self):
@@ -27,6 +28,6 @@ class BlueprintEntity(CoordinatorEntity):
     def device_state_attributes(self):
         """Return the state attributes."""
         return {
-            "time": str(self.coordinator.data.get("time")),
-            "static": self.coordinator.data.get("static"),
+            # "time": str(self.coordinator.data.get("time")),
+            # "static": self.coordinator.data.get("static"),
         }

@@ -1,19 +1,18 @@
-"""Adds config flow for Blueprint."""
+"""Adds config flow for SwitcherApi."""
 from homeassistant import config_entries
 from homeassistant.core import callback
-from sampleclient.client import Client
 import voluptuous as vol
 
-from custom_components.blueprint.const import (  # pylint: disable=unused-import
-    CONF_PASSWORD,
-    CONF_USERNAME,
+from custom_components.switcherapi.const import (  # pylint: disable=unused-import
+    CONF_API_BASE_URL,
+    CONF_API_PORT,
     DOMAIN,
     PLATFORMS,
 )
 
 
-class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Blueprint."""
+class SwitcherApiFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for SwitcherApi."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
@@ -34,11 +33,12 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             valid = await self._test_credentials(
-                user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                user_input[CONF_API_BASE_URL],
+                user_input[CONF_API_PORT],
             )
             if valid:
                 return self.async_create_entry(
-                    title=user_input[CONF_USERNAME], data=user_input
+                    title=DOMAIN, data=user_input
                 )
             else:
                 self._errors["base"] = "auth"
@@ -50,31 +50,30 @@ class BlueprintFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return BlueprintOptionsFlowHandler(config_entry)
+        return SwitcherApiOptionsFlowHandler(config_entry)
 
     async def _show_config_form(self, user_input):  # pylint: disable=unused-argument
         """Show the configuration form to edit location data."""
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
-                {vol.Required(CONF_USERNAME): str, vol.Required(CONF_PASSWORD): str}
+                {vol.Required(CONF_API_BASE_URL): str, vol.Required(CONF_API_PORT): str}
             ),
             errors=self._errors,
         )
 
-    async def _test_credentials(self, username, password):
+    async def _test_credentials(self, api_base_url, api_port):
         """Return true if credentials is valid."""
         try:
-            client = Client(username, password)
-            await client.async_get_data()
+            # await client.async_get_data()
             return True
         except Exception:  # pylint: disable=broad-except
             pass
         return False
 
 
-class BlueprintOptionsFlowHandler(config_entries.OptionsFlow):
-    """Blueprint config flow options handler."""
+class SwitcherApiOptionsFlowHandler(config_entries.OptionsFlow):
+    """SwitcherApi config flow options handler."""
 
     def __init__(self, config_entry):
         """Initialize HACS options flow."""
@@ -104,5 +103,5 @@ class BlueprintOptionsFlowHandler(config_entries.OptionsFlow):
     async def _update_options(self):
         """Update config entry options."""
         return self.async_create_entry(
-            title=self.config_entry.data.get(CONF_USERNAME), data=self.options
+            title=DOMAIN, data=self.options
         )

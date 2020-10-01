@@ -48,7 +48,7 @@ Use [black](https://github.com/ambv/black) to make sure the code follows the sty
 
 ## Test your code modification
 
-This custom component is based on [blueprint template](https://github.com/custom-components/blueprint).
+This custom component is based on [switcherapi template](https://github.com/custom-components/switcherapi).
 
 It comes with development environement in a container, easy to launch
 if you use Visual Studio Code. With this container you will have a stand alone
